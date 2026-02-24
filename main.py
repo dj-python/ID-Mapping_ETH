@@ -1,6 +1,6 @@
 from machine import Pin, SPI
 import time
-import W5500_EVB_PICO as W5500
+import T_ETH_Lite as ETH
 
 FIRMWARE_VERSION = 1.0
 SPI_SPEED = 10_000_000
@@ -79,7 +79,7 @@ class Main:
             self.client_ip = '192.168.1.104'
             # self.portNumber = 8004
 
-        W5500.init(self.client_ip, self.server_ip, self.server_port)
+        ETH.init(self.client_ip, self.server_ip, self.server_port)
         # endregion
 
         # start_time = time.ticks_ms()
@@ -97,7 +97,7 @@ class Main:
 
     # region time function
     def func_1ms(self):
-        ret = W5500.readMessage()
+        ret = ETH.readMessage()
 
     def func_10ms(self):
         pass
@@ -120,31 +120,31 @@ class Main:
                     self.sensorId[key] = self.readSensorId(int(key[-1]))
 
                     if self.isError_barcode != None:
-                        W5500.barcode_info[key] = self.isError_barcode
+                        ETH.barcode_info[key] = self.isError_barcode
                         pass
                 # time.sleep(0.05)
 
             if DEBUG_MODE:
                 print(f'SensorID: {self.sensorId}')
-            W5500.client.send('sensor_ID: {}'.format(self.sensorId))
-            W5500.client.send('barcode_info: {}'.format(W5500.barcode_info))
+            ETH.client.send('sensor_ID: {}'.format(self.sensorId))
+            ETH.client.send('barcode_info: {}'.format(ETH.barcode_info))
             self.isRead_sensorId = False
 
-        if W5500.isUpdateScript_mcu:
+        if ETH.isUpdateScript_mcu:
             self.updateScriptToMcu()
-            W5500.isUpdateScript_mcu = False
+            ETH.isUpdateScript_mcu = False
 
-        if W5500.isSendBarcode:
+        if ETH.isSendBarcode:
             self.sendBarcodeToMcu()
-            W5500.isSendBarcode = False
+            ETH.isSendBarcode = False
 
     def func_500ms(self):
         pass
         # self.sysLed_pico(not self.sysLed_pico.value())
 
     def func_1000ms(self):
-        if not W5500.client_status['connected']:
-            W5500.init(self.client_ip, self.server_ip, self.server_port)
+        if not ETH.client_status['connected']:
+            ETH.init(self.client_ip, self.server_ip, self.server_port)
     # endregion
 
     # region About TCP/IP
@@ -154,7 +154,7 @@ class Main:
         for i in range(8):
             ret = self.sendScript(i + 1)
             msg = f"Script save {ret}: MCU{i + 1}"
-            W5500.client.send(msg.encode('utf-8'))
+            ETH.client.send(msg.encode('utf-8'))
 
         if DEBUG_MODE:
             end_time = time.ticks_ms()
@@ -163,7 +163,7 @@ class Main:
     def sendBarcodeToMcu(self):
         self.barcode_sendStates = dict()
 
-        for key, value in W5500.barcode_info.items():
+        for key, value in ETH.barcode_info.items():
             ret = self.sendBarcode(int(key[-1]), value)
             self.barcode_sendStates[key] = ret
 
