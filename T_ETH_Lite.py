@@ -21,8 +21,8 @@ def init(client_ip, server_ip, server_port) -> None:
     global client
 
     # SPI 및 W5500 초기화
-    spi = SPI(0, 10_000_000, polarity=0, phase=0, mosi=Pin(12), miso=Pin(11), sck=Pin(10))
-    eth = network.WIZNET5K(spi, Pin(9), Pin(14))  # spi,cs,reset pin
+    spi = SPI(1, 10_000_000, polarity=0, phase=0, mosi=Pin(12), miso=Pin(11), sck=Pin(10))
+    eth = network.LAN(spi, Pin(9), Pin(14))  # spi,cs,reset pin
     eth.active(True)
 
     eth.ifconfig((client_ip, '255.255.255.0', '192.168.0.1', '8.8.8.8'))
