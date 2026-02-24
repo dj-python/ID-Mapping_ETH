@@ -1,6 +1,9 @@
 from machine import Pin, SPI
 import time
 import T_ETH_Lite as ETH
+import network
+
+# print(dir(network))
 
 FIRMWARE_VERSION = 1.0
 SPI_SPEED = 10_000_000
