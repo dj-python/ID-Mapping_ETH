@@ -3,6 +3,27 @@ import time
 import T_ETH_Lite as ETH
 import network
 
+# spi = SPI(1, baudrate=10_000_000, polarity=0, phase=0,
+#           sck=Pin(10), mosi=Pin(12), miso=Pin(11))
+#
+# lan = network.LAN(
+#     phy_addr=1,
+#     phy_type=network.PHY_W5500,
+#     spi=spi,
+#     cs=9,
+#     reset=14,
+#     int=13,
+# )
+#
+# lan.active(True)
+#
+# for i in range(10):
+#     cfg = lan.ifconfig()
+#     print(i, cfg)
+#     if cfg[0] != "0.0.0.0":
+#         break
+#     time.sleep(0.5)
+
 # print(dir(network))
 
 FIRMWARE_VERSION = 1.0
@@ -34,7 +55,7 @@ class Main:
         self.isError_barcode = str()
 
         # region SPI
-        self.spi = SPI(1, baudrate=SPI_SPEED, polarity=0, phase=0, bits=8, sck=Pin(2), mosi=Pin(1), miso=Pin(0))
+        self.spi = SPI(2, baudrate=SPI_SPEED, polarity=0, phase=0, bits=8, sck=Pin(2), mosi=Pin(1), miso=Pin(0))
         self.spi_cs_M1 = Pin(4, mode=Pin.OUT, value=1)
         self.spi_cs_M2 = Pin(5, mode=Pin.OUT, value=1)
         self.spi_cs_M3 = Pin(6, mode=Pin.OUT, value=1)
@@ -83,6 +104,10 @@ class Main:
             # self.portNumber = 8004
 
         ETH.init(self.client_ip, self.server_ip, self.server_port)
+
+
+
+
         # endregion
 
         # start_time = time.ticks_ms()
